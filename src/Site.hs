@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Site where
+module Site (siteInit) where
 
 import qualified Data.ByteString.Char8 as B
 import Snap.Core
@@ -10,11 +10,6 @@ import Snap.Snaplet.PostgresqlSimple
 
 import Application
 import Database
-
-getAllProjects :: Handler App App ()
-getAllProjects = do
-  allProjects <- query_ "SELECT * FROM projects"
-  writeBS $ B.pack $ show (allProjects :: [Project])
 
 routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("",          serveDirectory "static")

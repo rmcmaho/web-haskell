@@ -4,7 +4,6 @@
 module Main where
 
 import Snap
-
 import Site
 
 main :: IO ()

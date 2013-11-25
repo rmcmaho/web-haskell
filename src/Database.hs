@@ -1,13 +1,14 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Database where
+module Database (getAllProjects) where
 
 import Control.Applicative
 import qualified Data.Text as T
+import qualified Data.ByteString.Char8 as B
 import Snap
 import Snap.Snaplet.PostgresqlSimple
-import Database.PostgreSQL.Simple.FromRow
-
+import Database.PostgreSQL.Simple.FromRow()
 
 import Application
 
@@ -23,5 +24,10 @@ instance FromRow Project where
   fromRow = Project <$> field <*> field
 
 instance Show Project where
-    show (Project title description) =
-      "Project { title: " ++ T.unpack title ++ ", description: " ++ T.unpack description ++ " }\n"
+    show project =
+      "Project { title: " ++ T.unpack (title project) ++ ", description: " ++ T.unpack (description project) ++ " }\n"
+
+getAllProjects :: Handler App App ()
+getAllProjects = do
+  allProjects <- query_ "SELECT * FROM projects"
+  writeBS $ B.pack $ show (allProjects :: [Project])
