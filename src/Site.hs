@@ -12,7 +12,7 @@ import Application
 import Database
 
 routes :: [(B.ByteString, Handler App App ())]
-routes = [ ("",          serveDirectory "static")
+routes = [ ("", serveDirectory ".")
          , ("/projects", method GET getAllProjects)
          ]
 
