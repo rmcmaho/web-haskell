@@ -14,6 +14,7 @@ import Database
 routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("", serveDirectory ".")
          , ("/projects", method GET getAllProjects)
+         , ("/heist", method GET getAllProjectsHeist)
          ]
 
 siteInit :: SnapletInit App App
