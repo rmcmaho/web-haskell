@@ -36,7 +36,7 @@ projectSplice = do
   "description" ## (C.pureSplice . C.textSplice $ description)
 
 splice :: C.Splice (Handler App App)
-splice =  C.manyWithSplices C.runChildren projectSplice $ lift $ query_ "SELECT * FROM projects"
+splice =  C.manyWithSplices C.runChildren projectSplice $ lift $ query_ "SELECT title,description FROM projects"
 
 --dbHesitConfig = HeistConfig (Handler App App)
 dbHeistConfig = mempty { hcCompiledSplices = ("project" ## splice), hcTemplateLocations = [loadTemplates "templates"] }
