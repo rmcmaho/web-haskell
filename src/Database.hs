@@ -1,18 +1,17 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Database (getAllProjects, getAllProjectsHeist) where
+module Database (getAllProjects, dbHeistConfig) where
 
 import Control.Applicative
-import Control.Monad.Trans.Either
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as B
+import Data.Monoid (mempty)
 import Snap
 import Heist
 import qualified Heist.Compiled as C
 import Snap.Snaplet.PostgresqlSimple
 import Database.PostgreSQL.Simple.FromRow()
-import Blaze.ByteString.Builder
 
 import Application
 
@@ -39,15 +38,8 @@ projectSplice = do
 splice :: C.Splice (Handler App App)
 splice =  C.manyWithSplices C.runChildren projectSplice $ lift $ query_ "SELECT * FROM projects"
 
-getHeistState heistConfig = liftIO $ either (error "Heist Init failed") id <$> (runEitherT $ initHeist heistConfig)
-
-getBuilder heistState = maybe (error "Render template failed") fst $ C.renderTemplate heistState "database"
-
-getAllProjectsHeist = do
-  let heistConfig = HeistConfig defaultInterpretedSplices defaultLoadTimeSplices ("project" ## splice) noSplices [loadTemplates "templates"]
-  heistState <- getHeistState heistConfig
-  builder <- getBuilder heistState
-  writeBS $ toByteString builder
+--dbHesitConfig = HeistConfig (Handler App App)
+dbHeistConfig = mempty { hcCompiledSplices = ("project" ## splice), hcTemplateLocations = [loadTemplates "templates"] }
 
 getAllProjects :: Handler App App ()
 getAllProjects = do
