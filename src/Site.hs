@@ -11,6 +11,7 @@ import Snap.Snaplet.PostgresqlSimple
 
 import Application
 import Database
+import Route (webRoute, routeAppURL)
 
 instance HasHeist App where
   heistLens = subSnaplet heist
@@ -19,6 +20,7 @@ routes :: [(B.ByteString, Handler App App ())]
 routes = [ ("", serveDirectory ".")
          , ("/projects", method GET getAllProjects)
          , ("/heist", method GET (cRender "database"))
+         , ("/echo", method GET (webRoute routeAppURL))
          ]
 
 siteInit :: SnapletInit App App
