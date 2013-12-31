@@ -1,13 +1,11 @@
-DROP DATABASE if exists snap_db;
-CREATE DATABASE snap_db;
-\connect snap_db
 
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
   id SERIAL,
   title TEXT NOT NULL,
   description TEXT NOT NULL
 );
 
-INSERT INTO projects(title, description) values('A project', 'A description');
+INSERT INTO projects(title, description)
+       SELECT 'A project', 'A description'
+       WHERE NOT EXISTS (SELECT 1 FROM projects WHERE id=1);
 
-GRANT ALL PRIVILEGES ON projects to snap;
