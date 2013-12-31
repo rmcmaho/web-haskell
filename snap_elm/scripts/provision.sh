@@ -6,14 +6,18 @@ apt-get update
 echo Installing Haskell platform...
 apt-get install -y haskell-platform cabal-install
 
+echo Installing git...
+apt-get install -y git
+
+echo Install emacs...
+apt-get install -y emacs
+
 echo Installing PostgreSQL...
-apt-get install -y postgresql
+apt-get install -y postgresql postgresql-server-dev-9.1 libghc-postgresql-libpq-dev
 
-echo Updating cabal...
-su vagrant && cabal update
-su vagrant && cabal install cabal-install
-export PATH=/home/vagrant/.cabal/bin:$PATH
+echo apt-get cleanup...
+apt-get -y autoremove
 
-echo Installing snap framework...
-su vagrant && cabal install snap
+su vagrant -c '/vagrant_scripts/user.sh'
+su vagrant -c '/vagrant_scripts/cabal.sh'
 
