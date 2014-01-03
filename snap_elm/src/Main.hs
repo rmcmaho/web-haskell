@@ -1,9 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import Control.Applicative((<|>))
 import Control.Monad(forM_)
 import Snap.Core(Snap)
-import Snap.Util.FileServe(serveDirectoryWith,fancyDirectoryConfig)
+import Snap.Util.FileServe(serveDirectoryWith,fancyDirectoryConfig,simpleDirectoryConfig)
 import Snap.Http.Server(quickHttpServe)
 import System.Directory(setCurrentDirectory,getDirectoryContents)
 import System.FilePath((</>),takeExtension)
@@ -17,11 +18,13 @@ main =
   quickHttpServe site
 
 site :: Snap ()
-site = serveDirectoryWith fancyDirectoryConfig "src/build"
+site =
+  serveDirectoryWith fancyDirectoryConfig "public/build"
+  <|> serveDirectoryWith simpleDirectoryConfig "resources"
 
 precompile :: IO ()
 precompile =
-  setCurrentDirectory "src" >>
+  setCurrentDirectory "public" >>
   getFiles ".elm" "." >>= \files ->
   forM_ files externalCompile >>
   setCurrentDirectory ".."
@@ -37,4 +40,4 @@ externalCompile file =
   return ()
 
 getRuntime :: IO ()
-getRuntime = writeFile "src/build/elm-runtime.js" =<< readFile Elm.runtime
+getRuntime = writeFile "resources/elm-runtime.js" =<< readFile Elm.runtime
